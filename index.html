@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Gateway</title>
+  </head>
+  <body>
+    <input type="text" id="orderID" placeholder="Enter Order ID" />
+    <input type="text" id="amount" placeholder="Enter Amount ($)" />
+    <input type="text" id="coinType" placeholder="Coin Type" />
+    <button onclick="handleRequest()">Send Data</button>
+  </body>
+  <script>
+    const handleRequest = async () => {
+      const orderID = document.getElementById("orderID").value;
+      const amount = document.getElementById("amount").value;
+      const coinType = document.getElementById("coinType").value;
+      const response = await fetch("http://localhost:8000/getdata");
+      const data = await response.json();
+      console.log(data);
+    };
+  </script>
+</html>
