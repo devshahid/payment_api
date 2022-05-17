@@ -1,10 +1,20 @@
 import "./App.css";
-
+import "../src/css/style.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import PaymentRequest from "./Components/PaymentRequest";
+import PaymentHandler from "./Components/PaymentHandler-Basic";
 function App() {
   return (
-    <div className="App">
-      <h1>Hello World</h1>
-    </div>
+    <>
+      <Router>
+        <Routes>
+          <Route exact path="/" element={<PaymentRequest />}></Route>
+        </Routes>
+        <Routes>
+          <Route exact path="/handler" element={<PaymentHandler />}></Route>
+        </Routes>
+      </Router>
+    </>
   );
 }
 

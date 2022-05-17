@@ -1,5 +1,6 @@
 {
   "name": "payment-api",
+  "homepage": "/",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",

@@ -10,7 +10,8 @@ app.use(cors());
 const { db, config } = require("./Helpers/db/db");
 
 app.get("/request", async (req, res) => {
-  const userId = req.query.id;
+  const userId = req.query.userID;
+  console.log(userId);
   db.query(
     `UPDATE ${config.tableName} SET payment_status = ? WHERE id = ?`,
     ["pending", userId],
@@ -26,9 +27,8 @@ app.get("/request", async (req, res) => {
     }
   );
 });
-app.get("/payment-statuts", async (req, res) => {
+app.get("/payment-status", async (req, res) => {
   console.log("payment request");
-
   // const instance = require("./Helpers/instance/instances");
   const instance = new MySQLEvents(db, {
     startAtEnd: true,
