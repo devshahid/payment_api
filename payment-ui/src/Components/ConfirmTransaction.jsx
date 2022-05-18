@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import { TextField, Button } from "@mui/material";
-const PaymentRequest = () => {
-  const history = useNavigate();
+const ConfirmTransaction = () => {
   const [field, setField] = useState({
-    orderID: "",
-    amountUSD: "",
-    coinLabel: "",
+    txID: "",
+    paymentID: "",
+    payment_status: "",
+    confirmationNumber: "",
   });
-
-  const redirectRoute = () => {
-    history(
-      `/handler?orderID=${field.orderID}&amountUSD=${field.amountUSD}&coinLabel=${field.coinLabel}`
+  const updateStatus = async () => {
+    const response = await axios.post(
+      "http://localhost:8000/update-status",
+      field
     );
+    const data = await response.data;
+    console.log(data);
   };
   const handleInput = (e) => {
     setField({ ...field, [e.target.name]: e.target.value });
@@ -31,36 +33,36 @@ const PaymentRequest = () => {
             noValidate
             autoComplete="off"
           >
-            {/* <TextField
-              id="standard-basic"
-              label="User ID"
-              name="userID"
-              onBlur={handleInput}
-              variant="standard"
-            /> */}
             <TextField
               id="standard-basic"
-              label="Order ID"
-              name="orderID"
+              label="Payment ID"
+              name="paymentID"
               onBlur={handleInput}
               variant="standard"
             />
             <TextField
               id="standard-basic"
-              label="Amount (USD)"
-              name="amountUSD"
+              label="Transaction ID"
+              name="txID"
               onBlur={handleInput}
               variant="standard"
             />
             <TextField
               id="standard-basic"
-              label="Coin Label"
-              name="coinLabel"
+              label="Payment Status"
+              name="payment_status"
               onBlur={handleInput}
               variant="standard"
             />
-            <Button variant="contained" onClick={redirectRoute}>
-              Checkout
+            <TextField
+              id="standard-basic"
+              label="Confirmation Number"
+              name="confirmationNumber"
+              onBlur={handleInput}
+              variant="standard"
+            />
+            <Button variant="contained" onClick={updateStatus}>
+              UPDATE STATUS
             </Button>
           </Box>
         </div>
@@ -69,4 +71,4 @@ const PaymentRequest = () => {
   );
 };
 
-export default PaymentRequest;
+export default ConfirmTransaction;

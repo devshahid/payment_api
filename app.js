@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const crypto = require("crypto");
 const PORT = 8000;
 const mysql = require("mysql");
 const MySQLEvents = require("@rodrigogs/mysql-events");
@@ -24,6 +25,35 @@ app.get("/request", async (req, res) => {
           message: "status changed to pending",
         });
       }
+    }
+  );
+});
+app.get("/insertdetails", async (req, res) => {
+  const paymentID = crypto.randomBytes(8).toString("hex");
+  const txID = crypto.randomBytes(10).toString("hex");
+  console.log(req.query);
+  const { orderID, amountUSD, coinLabel } = req.query;
+  const USD_TO_KIRIN = 0.1;
+  const amount = (USD_TO_KIRIN * amountUSD).toFixed(8);
+  const insertData = {
+    orderID,
+    amountUSD,
+    amount,
+    coinLabel,
+    paymentID,
+    txID,
+    payment_status: "pending",
+  };
+  console.log(insertData);
+  db.query(
+    `INSERT INTO ${config.tableName} SET ?`,
+    insertData,
+    (error, results, fields) => {
+      if (error) throw error;
+      res.json({
+        status: "success",
+        message: "status changed to pending",
+      });
     }
   );
 });
@@ -75,6 +105,23 @@ app.get("/cancle-request", async (req, res) => {
   instance.on(MySQLEvents.EVENTS.CONNECTION_ERROR, console.error);
   instance.on(MySQLEvents.EVENTS.ZONGJI_ERROR, console.error);
   res.send("request cancled");
+});
+app.post("/update-status", (req, res) => {
+  const { txID, paymentID, payment_status, confirmationNumber } = req.body;
+  db.query(
+    `UPDATE ${config.tableName} SET payment_status = ?, confirmationNumber = ? WHERE paymentID = ? AND txID = ?`,
+    [payment_status, confirmationNumber, paymentID, txID],
+    (error, results, fields) => {
+      if (error) throw error;
+
+      if (results.affectedRows > 0) {
+        res.json({
+          status: "approved",
+          message: "payment successfully paid",
+        });
+      }
+    }
+  );
 });
 app.listen(PORT, () => {
   console.log(`server running at ${PORT}`);
