@@ -15,8 +15,11 @@
     "@rodrigogs/mysql-events": "^0.6.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "mysql": "^2.18.1",
-    "react-toastify": "^9.0.1"
+    "react-toastify": "^9.0.1",
+    "web3": "^1.7.3",
+    "web3-eth-accounts": "^1.7.3"
   }
 }

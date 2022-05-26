@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const config = {
   tableName: "crypto_payments",
+  addressTable: "addressess",
   dbName: "payment_api",
   dbhost: "localhost",
   dbuser: "root",

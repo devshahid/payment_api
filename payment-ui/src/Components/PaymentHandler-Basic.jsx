@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 import QRCode from "react-qr-code";
-import { TextField, CircularProgress, Box } from "@mui/material";
+import { TextField, CircularProgress, Box, Tooltip } from "@mui/material";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,6 +17,7 @@ const PaymentHandler = () => {
     loader: true,
     convertedAmount: params.get("amountUSD"),
     state: true,
+    address: "",
   });
   const USD_TO_KIRIN = 0.1;
   const fetchData = async () => {
@@ -34,11 +35,12 @@ const PaymentHandler = () => {
           convertedAmount: USD_TO_KIRIN * params.get("amountUSD"),
           loader: false,
           paymentStatus: "Awaiting Payment",
+          address: data.address,
         });
         let response = await axios.get(`http://localhost:8000/payment-status`);
-        let data = await response.data;
-        if (data.status === "approved") {
-          console.log(data);
+        let paymentData = await response.data;
+        if (paymentData.status === "approved") {
+          console.log(paymentData);
           toast.success("Payment Successfully Paid!", {
             position: "top-center",
             autoClose: 5000,
@@ -87,15 +89,18 @@ const PaymentHandler = () => {
                 <h1>Amount : {config.convertedAmount.toFixed(8)} KIRIN</h1>
               </div>
               <div className="bodyDetails">
-                <div className="qrCode">
-                  <QRCode value="www.facebook.com"></QRCode>
-                </div>
+                <Tooltip title={config.address} arrow>
+                  <div className="qrCode">
+                    <QRCode value={config.address} />
+                  </div>
+                </Tooltip>
+
                 <div className="paymentContent">
                   <TextField
                     disabled
                     id="outlined-disabled"
                     label="Address"
-                    defaultValue="457896554151848161548"
+                    defaultValue={config.address}
                   />
                 </div>
               </div>
