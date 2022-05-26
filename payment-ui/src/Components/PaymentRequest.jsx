@@ -12,7 +12,11 @@ const PaymentRequest = () => {
 
   const redirectRoute = () => {
     history(
-      `/handler?orderID=${field.orderID}&amountUSD=${field.amountUSD}&coinLabel=${field.coinLabel}`
+      `/handler?orderID=${field.orderID}&amountUSD=${
+        field.amountUSD
+      }&coinLabel=${
+        field.coinLabel
+      }&redirecturl=${"http://localhost:3000/displayData"}&callbackurl=${"http://localhost:3000/displayData"}`
     );
   };
   const handleInput = (e) => {

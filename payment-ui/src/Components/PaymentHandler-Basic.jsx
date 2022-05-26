@@ -7,7 +7,6 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const PaymentHandler = () => {
-  const callbackUrl = "http://localhost:3000/displayData";
   const location = useLocation();
   const search = location.search;
   const params = new URLSearchParams(search);
@@ -18,6 +17,8 @@ const PaymentHandler = () => {
     convertedAmount: params.get("amountUSD"),
     state: true,
     address: "",
+    redirecturl: params.get("redirecturl"),
+    callbackurl: params.get("callbackurl"),
   });
   const USD_TO_KIRIN = 0.1;
   const fetchData = async () => {
@@ -56,10 +57,10 @@ const PaymentHandler = () => {
             paymentStatus: "Redirecting! Please wait...",
             convertedAmount: USD_TO_KIRIN * params.get("amount"),
           });
-          const callbackUrlData = new URLSearchParams(data);
+          const redirectUrlData = new URLSearchParams(paymentData);
           setTimeout(function () {
             window.location.replace(
-              `${callbackUrl}?${callbackUrlData.toString()}`
+              `${config.redirecturl}?${redirectUrlData.toString()}`
             );
           }, 5000);
           console.log(config);

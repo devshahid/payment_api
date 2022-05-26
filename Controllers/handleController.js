@@ -8,12 +8,11 @@ class HandleController {
   async insertDetails(req, res) {
     const account = new Web3EthAccounts(process.env.infraurl);
     const accounts = account.create();
-    console.log(accounts);
-    // console.log(accounts.address);
     const paymentID = crypto.randomBytes(8).toString("hex");
     const txID = crypto.randomBytes(10).toString("hex");
+    const { orderID, amountUSD, coinLabel, callbackurl, redirecturl } =
+      req.query;
     console.log(req.query);
-    const { orderID, amountUSD, coinLabel } = req.query;
     const USD_TO_KIRIN = 0.1;
     const amount = (USD_TO_KIRIN * amountUSD).toFixed(8);
     const insertData = {
@@ -24,6 +23,8 @@ class HandleController {
       paymentID,
       txID,
       payment_status: "pending",
+      callbackurl,
+      redirecturl,
     };
     const insertAddress = {
       addressKey: accounts.address,
@@ -46,6 +47,8 @@ class HandleController {
           status: "success",
           message: "status changed to pending",
           address: accounts.address,
+          paymentID,
+          txID,
         });
       }
     );
