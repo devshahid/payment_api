@@ -20,6 +20,7 @@
     "mysql": "^2.18.1",
     "react-toastify": "^9.0.1",
     "web3": "^1.7.3",
+    "web3-eth": "^1.7.3",
     "web3-eth-accounts": "^1.7.3"
   }
 }

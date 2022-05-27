@@ -5,7 +5,7 @@ node_modules/
 /node_modules
 /.pnp
 .pnp.js
-.env
+cred.txt
 # testing
 /coverage
 

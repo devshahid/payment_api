@@ -1,4 +1,5 @@
 const Web3EthAccounts = require("web3-eth-accounts");
+const web3_eth = require("web3-eth");
 const crypto = require("crypto");
 const mysql = require("mysql");
 const MySQLEvents = require("@rodrigogs/mysql-events");
@@ -117,6 +118,21 @@ class HandleController {
         }
       }
     );
+  }
+  async getbalance(req, res) {
+    const web3Eth = new web3_eth(process.env.infraurl);
+
+    const balance = await web3Eth.getBalance(
+      "0x52ef021c521f70a91e605CcdbE1D47947BEc1627"
+    );
+    console.log(balance);
+    res.send(balance);
+  }
+  async createAdd(req, res) {
+    const account = new Web3EthAccounts(process.env.infraurl);
+    const accounts = account.create();
+    res.send(accounts);
+    console.log(accounts);
   }
 }
 module.exports = new HandleController();
