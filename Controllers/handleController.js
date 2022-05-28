@@ -1,10 +1,14 @@
 const Web3EthAccounts = require("web3-eth-accounts");
 const web3_eth = require("web3-eth");
+const web3utils = require("web3-utils");
 const crypto = require("crypto");
 const mysql = require("mysql");
 const MySQLEvents = require("@rodrigogs/mysql-events");
 const { db, config } = require("../Helpers/db/db");
-
+let hexAddress = "";
+let kirinAmount = 0;
+let oldBalance = 0;
+let newBalance = 0;
 class HandleController {
   async insertDetails(req, res) {
     const account = new Web3EthAccounts(process.env.infraurl);
@@ -13,7 +17,6 @@ class HandleController {
     const txID = crypto.randomBytes(10).toString("hex");
     const { orderID, amountUSD, coinLabel, callbackurl, redirecturl } =
       req.query;
-    console.log(req.query);
     const USD_TO_KIRIN = 0.1;
     const amount = (USD_TO_KIRIN * amountUSD).toFixed(8);
     const insertData = {
@@ -26,12 +29,12 @@ class HandleController {
       payment_status: "pending",
       callbackurl,
       redirecturl,
+      address: accounts.address,
     };
     const insertAddress = {
       addressKey: accounts.address,
       privateKey: accounts.privateKey,
     };
-    console.log(insertData);
     db.query(
       `INSERT INTO ${config.tableName} SET ?`,
       insertData,
@@ -55,32 +58,66 @@ class HandleController {
     );
   }
   async paymentStatus(req, res) {
+    const { orderID } = req.query;
+    console.log(orderID);
+
+    db.query(
+      `SELECT * FROM ${config.tableName} WHERE orderID = ${orderID}`,
+      async (error, results) => {
+        if (error) throw error;
+        hexAddress = results[0].address;
+        kirinAmount = results[0].amount;
+        console.log(hexAddress);
+        const web3Eth = new web3_eth(process.env.infraurl);
+        const balance = await web3Eth.getBalance(shexAddress);
+        oldBalance = await web3utils.fromWei(balance, "ether");
+      }
+    );
+
+    const timer = setInterval(async () => {
+      const web3Eth = new web3_eth(process.env.infraurl);
+      const balance = await web3Eth.getBalance(hexAddress);
+      oldBalance = parseFloat(await web3utils.fromWei(balance, "ether"));
+      if (
+        oldBalance === parseFloat(kirinAmount) ||
+        oldBalance >= parseFloat(kirinAmount)
+      ) {
+        db.query(
+          `UPDATE ${config.tableName} SET payment_status = ? WHERE orderID = ?`,
+          ["paid", orderID],
+          (error, results, fields) => {
+            if (error) throw error;
+            if (results.affectedRows > 0) {
+              clearInterval(timer);
+            }
+          }
+        );
+      }
+    }, 1000);
     console.log("payment request");
-    // const instance = require("./Helpers/instance/instances");
     const instance = new MySQLEvents(db, {
       startAtEnd: true,
       excludedSchemas: {
         mysql: true,
       },
     });
-
     await instance.start();
     instance.addTrigger({
       name: "Trigger on payment status column change", // event name
-      expression: `${config.dbName}.${config.tableName}.*`, // db.table.column
+      expression: `${config.dbName}.${config.tableName}.payment_status`, // db.table.column
       statement: MySQLEvents.STATEMENTS.UPDATE, // update, delete, select, insert
       onEvent: async (event) => {
         // You will receive the events here
-        console.log("Event stopped");
-        console.log(event);
-        await instance.stop();
-        res.json({
-          status: "approved",
-          message: "payment successfully paid",
-        });
+        if (event.affectedRows[0].after.orderID === orderID) {
+          console.log("Event stopped");
+          await instance.stop();
+          res.json({
+            status: "approved",
+            message: "payment successfully paid",
+          });
+        }
       },
     });
-
     instance.on(MySQLEvents.EVENTS.CONNECTION_ERROR, console.error);
     instance.on(MySQLEvents.EVENTS.ZONGJI_ERROR, console.error);
   }
@@ -119,20 +156,22 @@ class HandleController {
       }
     );
   }
-  async getbalance(req, res) {
+  async getbalance(addressID) {
     const web3Eth = new web3_eth(process.env.infraurl);
-
-    const balance = await web3Eth.getBalance(
-      "0x52ef021c521f70a91e605CcdbE1D47947BEc1627"
-    );
-    console.log(balance);
-    res.send(balance);
+    const balance = await web3Eth.getBalance(addressID);
+    const etherBal = await web3utils.fromWei(balance, "ether");
+    return etherBal;
   }
   async createAdd(req, res) {
     const account = new Web3EthAccounts(process.env.infraurl);
     const accounts = account.create();
     res.send(accounts);
     console.log(accounts);
+  }
+  async checkPaymentStatus(req, res) {
+    const { orderID } = req.body;
+    res.json({ orderID });
+    console.log(orderID);
   }
 }
 module.exports = new HandleController();

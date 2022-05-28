@@ -38,8 +38,11 @@ const PaymentHandler = () => {
           paymentStatus: "Awaiting Payment",
           address: data.address,
         });
-        let response = await axios.get(`http://localhost:8000/payment-status`);
+        let response = await axios.get(
+          `http://localhost:8000/payment-status?orderID=${config.orderID}`
+        );
         let paymentData = await response.data;
+        console.log(paymentData);
         if (paymentData.status === "approved") {
           console.log(paymentData);
           toast.success("Payment Successfully Paid!", {

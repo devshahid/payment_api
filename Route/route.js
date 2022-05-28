@@ -5,9 +5,11 @@ const controllers = require("../Controllers/handleController");
 
 router.get("/insertdetails", controllers.insertDetails);
 router.get("/payment-status", controllers.paymentStatus);
+router.post("/checkpayment-status", controllers.checkPaymentStatus);
 router.get("/cancle-request", controllers.cancleRequest);
 router.post("/update-status", controllers.updateStatus);
 router.post("/getbalance", controllers.getbalance);
+router.get("/getbalance", controllers.getbalance);
 router.post("/create-add", controllers.createAdd);
 router.get("/create-add", controllers.createAdd);
 
