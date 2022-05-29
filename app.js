@@ -7,15 +7,11 @@ var cors = require("cors");
 app.use(express.json({ limit: "10MB" }));
 app.use(cors());
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join("payment-ui/build")));
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "payment-ui", "build", "index.html"))
-  );
-}
-
 app.use(require("./Route/route"));
 
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("payment-ui/build"));
+}
 app.listen(PORT, () => {
   console.log(`server running at ${PORT}`);
 });

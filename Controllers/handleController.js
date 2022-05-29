@@ -11,6 +11,7 @@ let oldBalance = 0;
 let newBalance = 0;
 class HandleController {
   async insertDetails(req, res) {
+    console.log("insert request");
     const account = new Web3EthAccounts(process.env.infraurl);
     const accounts = account.create();
     const paymentID = crypto.randomBytes(8).toString("hex");
