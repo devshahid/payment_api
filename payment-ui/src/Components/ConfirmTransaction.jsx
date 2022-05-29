@@ -10,10 +10,7 @@ const ConfirmTransaction = () => {
     confirmationNumber: "",
   });
   const updateStatus = async () => {
-    const response = await axios.post(
-      "http://localhost:8000/update-status",
-      field
-    );
+    const response = await axios.post("/update-status", field);
     const data = await response.data;
     console.log(data);
   };

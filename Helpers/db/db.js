@@ -2,10 +2,10 @@ const mysql = require("mysql");
 const config = {
   tableName: "crypto_payments",
   addressTable: "addressess",
-  dbName: "payment_api",
-  dbhost: "localhost",
-  dbuser: "root",
-  dbpassword: "",
+  dbName: "mgautoma_remotedb",
+  dbhost: "148.72.168.185",
+  dbuser: "mgautoma",
+  dbpassword: "mgpass@2017",
 };
 
 var db = mysql.createConnection({

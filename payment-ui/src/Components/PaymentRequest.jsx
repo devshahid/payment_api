@@ -35,13 +35,6 @@ const PaymentRequest = () => {
             noValidate
             autoComplete="off"
           >
-            {/* <TextField
-              id="standard-basic"
-              label="User ID"
-              name="userID"
-              onBlur={handleInput}
-              variant="standard"
-            /> */}
             <TextField
               id="standard-basic"
               label="Order ID"

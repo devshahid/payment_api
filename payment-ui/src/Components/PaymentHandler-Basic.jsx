@@ -24,9 +24,7 @@ const PaymentHandler = () => {
   const fetchData = async () => {
     if (config.state) {
       console.log(USD_TO_KIRIN * params.get("amountUSD"));
-      let response = await axios.get(
-        `http://localhost:8000/insertdetails${location.search}`
-      );
+      let response = await axios.get(`/insertdetails${location.search}`);
       let data = await response.data;
       console.log(data);
       if (data.status === "success") {
@@ -39,7 +37,7 @@ const PaymentHandler = () => {
           address: data.address,
         });
         let response = await axios.get(
-          `http://localhost:8000/payment-status?orderID=${config.orderID}`
+          `/payment-status?orderID=${config.orderID}`
         );
         let paymentData = await response.data;
         console.log(paymentData);
