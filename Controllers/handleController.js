@@ -70,7 +70,7 @@ class HandleController {
         kirinAmount = results[0].amount;
         console.log(hexAddress);
         const web3Eth = new web3_eth(process.env.infraurl);
-        const balance = await web3Eth.getBalance(shexAddress);
+        const balance = await web3Eth.getBalance(hexAddress);
         oldBalance = await web3utils.fromWei(balance, "ether");
       }
     );
