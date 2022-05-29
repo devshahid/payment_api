@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "NPM CONFIG PRODUCTION=false npm install --prefix payment-ui && npm run build --prefix payment-ui"
+    "heroku-postbuild": "NPM_CONFIG PRODUCTION=false npm install --prefix payment-ui && npm run build --prefix payment-ui"
   },
   "keywords": [],
   "author": "",
